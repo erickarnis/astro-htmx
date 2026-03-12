@@ -100,10 +100,10 @@ export default function astroHtmx(options: AstroHtmxOptions = {}): AstroIntegrat
                   });
                 }
               });
-              document.addEventListener("htmx:after:swap", (e) => {
+              document.addEventListener("htmx:after:swap", () => {
                 if (window.Alpine) {
                   Alpine.mutateDom(() => {
-                    Alpine.initTree(e.detail.target ?? e.detail.elt);
+                    Alpine.initTree(document.body);
                   });
                 }
               });
