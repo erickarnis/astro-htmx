@@ -16,6 +16,8 @@ interface AstroHtmxOptions {
   errorHandling?: boolean | ErrorHandlingOptions
   /** Re-init Alpine.js after HTMX swaps (default: false) */
   alpineBridge?: boolean
+  /** Headers to include in the Vary response header. Set to false to disable. (default: ["HX-Request", "HX-Boosted"]) */
+  vary?: string[] | false
 }
 
 export default function astroHtmx(options: AstroHtmxOptions = {}): AstroIntegration {
@@ -23,6 +25,7 @@ export default function astroHtmx(options: AstroHtmxOptions = {}): AstroIntegrat
     errorHandling = true,
     csrf = false,
     alpineBridge = false,
+    vary = ["HX-Request", "HX-Boosted"],
   } = options
 
   // Normalise errorHandling to full options object
@@ -32,11 +35,32 @@ export default function astroHtmx(options: AstroHtmxOptions = {}): AstroIntegrat
     { prevent: errorHandling.prevent ?? true, notify: errorHandling.notify ?? "console" }
 
   const csrfMetaName = typeof csrf === "object" ? (csrf.metaName ?? "csrf-token") : "csrf-token"
+  const varyHeaders = vary === false ? [] : vary
 
   return {
     name: "astro-htmx",
     hooks: {
-      "astro:config:setup": ({ addMiddleware, injectScript }) => {
+      "astro:config:setup": ({ addMiddleware, injectScript, updateConfig }) => {
+        // Virtual module to pass config to middleware at runtime
+        const virtualModuleId = "virtual:astro-htmx/config"
+        const resolvedId = "\0" + virtualModuleId
+
+        updateConfig({
+          vite: {
+            plugins: [{
+              name: "astro-htmx-config",
+              resolveId(id: string) {
+                if (id === virtualModuleId) return resolvedId
+              },
+              load(id: string) {
+                if (id === resolvedId) {
+                  return `export const varyHeaders = ${JSON.stringify(varyHeaders)};`
+                }
+              },
+            }],
+          },
+        })
+
         addMiddleware({
           entrypoint: "astro-htmx/middleware",
           order: "pre",

@@ -1,5 +1,7 @@
 import { defineMiddleware } from "astro:middleware"
 import { parseHtmxHeaders } from "./locals"
+// @ts-ignore — resolved by Vite virtual module plugin at runtime
+import { varyHeaders } from "virtual:astro-htmx/config"
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const htmx = parseHtmxHeaders(context.request)
@@ -7,9 +9,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   const response = await next()
 
-  // Vary on HX-Request and HX-Boosted so CDN/proxy caches serve correct version
-  response.headers.append("Vary", "HX-Request")
-  response.headers.append("Vary", "HX-Boosted")
+  for (const header of varyHeaders) {
+    response.headers.append("Vary", header)
+  }
 
   return response
 })

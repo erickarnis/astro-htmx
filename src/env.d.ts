@@ -8,3 +8,7 @@ declare module "astro:middleware" {
     ) => Promise<Response> | Response,
   ): typeof fn
 }
+
+declare module "virtual:astro-htmx/config" {
+  export const varyHeaders: string[]
+}
