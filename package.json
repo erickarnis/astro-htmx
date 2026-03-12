@@ -1,0 +1,34 @@
+{
+  "name": "astro-htmx",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./middleware": "./dist/middleware.js",
+    "./response": "./dist/response.js",
+    "./fragment": "./dist/fragment.js",
+    "./types": "./dist/types.d.ts"
+  },
+  "typesVersions": {
+    "*": {
+      ".": ["dist/index.d.ts"],
+      "middleware": ["dist/middleware.d.ts"],
+      "response": ["dist/response.d.ts"],
+      "fragment": ["dist/fragment.d.ts"]
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "prepublishOnly": "tsc"
+  },
+  "peerDependencies": {
+    "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "astro": "^5.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
