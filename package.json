@@ -25,10 +25,10 @@
     "prepublishOnly": "tsc"
   },
   "peerDependencies": {
-    "astro": "^5.0.0"
+    "astro": "^6.1.8"
   },
   "devDependencies": {
-    "astro": "^5.0.0",
+    "astro": "^6.1.8",
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
   }
